@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="images/system/logo_tab.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="images/system/logo_tab_ios.png" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <title>Doger</title>
+</head>
+<body>
+<div id="orderModal" class="modal" onclick="closeOrderModal()" style="display: none;">
+    <div class="modal-content" onclick="event.stopPropagation();">
+        <span class="close_modal" onclick="closeOrderModal()">
+            <svg width="25" height="25" viewBox="0 0 25 25" xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M9.84606 12.4986L0.552631 3.20519C-0.1806 2.47196 -0.1806 1.28315 0.552631 0.549923C1.28586 -0.183308 2.47466 -0.183308 3.20789 0.549923L12.5013 9.84335L21.792 0.552631C22.5253 -0.1806 23.7141 -0.1806 24.4473 0.552631C25.1805 1.28586 25.1805 2.47466 24.4473 3.20789L15.1566 12.4986L24.45 21.792C25.1832 22.5253 25.1832 23.7141 24.45 24.4473C23.7168 25.1805 22.528 25.1805 21.7947 24.4473L12.5013 15.1539L3.20519 24.45C2.47196 25.1832 1.28315 25.1832 0.549923 24.45C-0.183308 23.7168 -0.183308 22.528 0.549923 21.7947L9.84606 12.4986Z"></path>
+            </svg>
+        </span>
+        <div id="emptyCartMessage">
+            <!-- <img src="images/system/pust.png" alt=""> -->
+            <dotlottie-player src="https://lottie.host/1b36b017-d6bd-48f1-9a70-8f0abbcf0d26/eDJcvjN0bt.json" background="transparent" speed="1" style="width: 400px; height: 400px;" loop autoplay></dotlottie-player>
+            <span style="text-align: center; font-size: 17px; font-weight: bold;">Ой, пусто!</span>
+        </div>
+        <div class="order-modal"  style="display: none">
+            <div id="cartModal" class="cart-modal"></div>
+            <div class="order-fields">
+                <div class="order-fields-styles">
+                    <h3>Оформление заказа</h3>
+                    <input type="text" id="address" placeholder="Адрес" name="shipping-address" autocomplete="on">
+                    <div class="two-input">
+                        <input type="text" id="houseNumber" name="house-number" autocomplete="house-number" placeholder="Дом">
+                        <input type="number" min="0" id="apartmentNumber" name="apartment-number" autocomplete="apartment-number" placeholder="№ кв.">
+                    </div>
+                    <div class="two-input">
+                        <select id="countryCode" name="country-code"> 
+                            <option value="+996">+996</option>
+                        </select>
+                        <input type="tel" id="phoneNumber" name="phone-number" autocomplete="tel" placeholder="999-999999" maxlength="10" oninput="formatPhoneNumber()"/>
+                    </div>
+                    <input type="text" id="fullName" name="full-name" autocomplete="name" placeholder="Ваше имя">
+                    <button id="submitOrderBtn" onclick="submitOrder()" disabled>Заказать</button>
+                    <div class="payments">
+                        <p>Способы оплаты:</p>
+                        <div class="payments_img">
+                            <img src="images/system/payment/mbank.png" alt="">
+                            <img src="images/system/payment/optima_bank.png" alt="">
+                            <img src="images/system/payment/o!_dengi.png" alt="">
+                            <img src="images/system/payment/megapay.png" alt="">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="my_orders" class="my_orders_bg">
+    <div class="my_orders_box">
+        <a href="javascript:history.back()" class="close_my_orders">
+            <svg width="25" height="25" viewBox="0 0 25 25" xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M9.84606 12.4986L0.552631 3.20519C-0.1806 2.47196 -0.1806 1.28315 0.552631 0.549923C1.28586 -0.183308 2.47466 -0.183308 3.20789 0.549923L12.5013 9.84335L21.792 0.552631C22.5253 -0.1806 23.7141 -0.1806 24.4473 0.552631C25.1805 1.28586 25.1805 2.47466 24.4473 3.20789L15.1566 12.4986L24.45 21.792C25.1832 22.5253 25.1832 23.7141 24.45 24.4473C23.7168 25.1805 22.528 25.1805 21.7947 24.4473L12.5013 15.1539L3.20519 24.45C2.47196 25.1832 1.28315 25.1832 0.549923 24.45C-0.183308 23.7168 -0.183308 22.528 0.549923 21.7947L9.84606 12.4986Z"></path>
+            </svg>
+        </a>
+        <div class="my_orders">
+            <h3>Мои заказы</h3>
+            <div class="accordion" id="accordion">
+            </div>
+        </div>
+    </div>
+</div>  
+<div class="feedback_box" id="feedback">
+    <a href="javascript:history.back()" class="close_feedback">
+        <svg width="25" height="25" viewBox="0 0 25 25" xmlns="http://www.w3.org/2000/svg">
+            <path fill-rule="evenodd" clip-rule="evenodd" d="M9.84606 12.4986L0.552631 3.20519C-0.1806 2.47196 -0.1806 1.28315 0.552631 0.549923C1.28586 -0.183308 2.47466 -0.183308 3.20789 0.549923L12.5013 9.84335L21.792 0.552631C22.5253 -0.1806 23.7141 -0.1806 24.4473 0.552631C25.1805 1.28586 25.1805 2.47466 24.4473 3.20789L15.1566 12.4986L24.45 21.792C25.1832 22.5253 25.1832 23.7141 24.45 24.4473C23.7168 25.1805 22.528 25.1805 21.7947 24.4473L12.5013 15.1539L3.20519 24.45C2.47196 25.1832 1.28315 25.1832 0.549923 24.45C-0.183308 23.7168 -0.183308 22.528 0.549923 21.7947L9.84606 12.4986Z"></path>
+        </svg>
+    </a>
+    <div class="feedback_inputs">
+        <form id="messageForm" class="message-form">
+            <h3>Обратная связь</h3>
+            <input type="text" id="name" class="form-control" name="firstName" required placeholder="Введите Ваше имя">
+            <input type="tel" id="phone" class="form-control" name="phone" required placeholder="Введите номер телефона">
+            <textarea id="message" class="form-control" name="message" rows="4" required placeholder="Введите сообщение" style="resize: vertical; max-height: 300px;"></textarea>
+            <button type="button" id="submitBtn" class="submit-btn" disabled>Отправить сообщение</button>
+        </form>
+        <div id="successMessage" class="success-message" style="">
+            <button id="closeButton">Назад</button>
+            <iframe src="https://lottie.host/embed/55c1d1d2-e79f-4fae-866c-6352980fc49d/nxxeZAY9l2.json" width="100%"></iframe>
+            <span>Сообщение успешно отправлено!</span>
+        </div>
+    </div>
+</div>
+
+
+
+    <div class="header">
+        <div class="menu">
+            <a href="#category3">Пахлава</a>
+            <a href="#category1">Пончики</a>
+            <a href="#category2">Бабл ти</a>
+            <!-- <a href="#category3">Смузи</a>
+            <a href="#category4">Молочные</a> -->
+        </div>
+        <div class="header_dropdown" data-dropdown>
+            <button class="css-header_btn" data-dropdown-button>
+                <svg focusable="false" viewBox="0 0 24 24"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"></path></svg>
+            </button>
+            <div class="dropdown-menu">
+                <div class="dropdown-menu_box">
+                    <div class="dropdown-links">
+                        <label class="dropdown-link theme-switch"  for="checkbox" type="checkbox">
+                            <span class="dropdown-icon">
+                                <svg width="24" height="24"><path fill-rule="evenodd" clip-rule="evenodd" d="M12.003 1.999C6.5 1.999 2 6.497 2 11.999 1.999 17.504 6.499 22 12.003 22c1.411 0 2.484-1.144 2.484-2.519a2.54 2.54 0 0 0-.688-1.72c-.054-.055-.1-.118-.1-.305v-.017a.475.475 0 0 1 .485-.485H16c3.298 0 6.001-2.7 6.001-5.998v-.006C21.973 5.95 17.36 2 12.003 2zM4 11.999c0-4.397 3.604-8 8.004-8 4.477 0 7.975 3.27 7.997 6.96C20 13.15 18.194 14.955 16 14.955h-1.79a2.476 2.476 0 0 0-2.51 2.51c.002.646.214 1.223.66 1.682.082.1.128.222.128.334 0 .32-.227.52-.484.52C7.603 20 4 16.396 4 12zM13 8a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm-3 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm-2 4a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm9-2a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/></svg>
+                            </span>
+                            <input type="checkbox" id="checkbox">
+                            Оформление<span class="slider_switch"></span>
+                        </label>
+                        <a href="#my_orders" class="dropdown-link">
+                            <span class="dropdown-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"><path fill-rule="evenodd" clip-rule="evenodd" d="M4 7c0-.971.002-1.599.064-2.061.059-.434.153-.57.229-.646.076-.076.212-.17.646-.229C5.4 4.002 6.029 4 7 4h7.535A3.982 3.982 0 0 0 14 6v13.613l-2-.667-3 1-3-1-2 .667V7zm12-1a2 2 0 1 1 4 0v2h-4V6zm4.143 4H16v12.387l-4-1.333-3 1-3-1-4 1.333V6.934c0-.886 0-1.65.082-2.262.088-.655.287-1.284.797-1.793.51-.51 1.138-.709 1.793-.797C5.284 2 6.048 2 6.934 2H18a4 4 0 0 1 4 4v2.171c0 .142 0 .311-.014.46-.017.173-.06.42-.216.667a1.5 1.5 0 0 1-.472.472 1.503 1.503 0 0 1-.667.216 4.957 4.957 0 0 1-.46.014h-.028zM7 6a1 1 0 1 0 0 2h4a1 1 0 1 0 0-2H7zm2 5a1 1 0 0 1-1 1H7a1 1 0 1 1 0-2h1a1 1 0 0 1 1 1zm-2 3a1 1 0 1 0 0 2h3a1 1 0 1 0 0-2H7z"/></svg>
+                            </span>
+                            Мои заказы
+                        </a>
+                        <a href="#feedback" class="dropdown-link">
+                            <span class="dropdown-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" ><path fill-rule="evenodd" clip-rule="evenodd" d="M6.911 5.995c-.438.035-.663.098-.819.176a1.98 1.98 0 0 0-.874.856c-.08.153-.145.372-.18.801C5 8.27 5 8.84 5 9.678v8.6l2-1.958a2.022 2.022 0 0 1 1.414-.573H15.2c.857 0 1.439-.001 1.889-.037.438-.035.663-.099.819-.177a1.98 1.98 0 0 0 .874-.855c.08-.153.145-.373.18-.802.037-.44.038-1.01.038-1.85V9.679c0-.839 0-1.409-.038-1.85-.035-.429-.1-.648-.18-.801a1.98 1.98 0 0 0-.874-.856c-.156-.078-.38-.141-.819-.176-.45-.036-1.032-.037-1.889-.037H8.8c-.857 0-1.439 0-1.889.037zM8.759 4h6.482c.805 0 1.47 0 2.01.043.563.045 1.08.142 1.565.384a3.959 3.959 0 0 1 1.748 1.711c.247.475.346.98.392 1.531C21 8.2 21 8.85 21 9.637v2.43c0 .788 0 1.439-.044 1.969-.046.55-.145 1.056-.392 1.53a3.959 3.959 0 0 1-1.748 1.712c-.485.242-1.002.338-1.564.383-.541.044-1.206.043-2.01.043H8.413l-2.939 2.877C4.562 21.476 3 20.842 3 19.578v-9.94c0-.789 0-1.44.044-1.969.046-.55.145-1.056.392-1.531a3.959 3.959 0 0 1 1.748-1.711c.485-.242 1.002-.339 1.564-.384C7.29 4 7.954 4 8.758 4z"/><path fill-rule="evenodd" clip-rule="evenodd" d="M7 9a1 1 0 0 1 1-1h8a1 1 0 1 1 0 2H8a1 1 0 0 1-1-1zM7 13a1 1 0 0 1 1-1h5a1 1 0 1 1 0 2H8a1 1 0 0 1-1-1z"/></svg>
+                            </span>
+                            Обратная связь
+                        </a>
+                        <a href="delivery.html" class="dropdown-link">
+                            <span class="dropdown-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"><path fill-rule="evenodd" clip-rule="evenodd" d="M16.083 14.9C17.342 13.496 18 12.196 18 11a6 6 0 0 0-12 0c0 1.208.67 2.599 1.914 4.057 1.191 1.396 2.713 2.622 3.98 3.495 1.381-1.056 2.952-2.271 4.189-3.651zm-2.984 5.249C15.827 18.062 20 14.849 20 11a8 8 0 1 0-16 0c0 3.816 4.103 7.381 6.832 9.249.69.472 1.603.408 2.267-.1z"/><path fill-rule="evenodd" clip-rule="evenodd" d="M12 13a2 2 0 1 0 0-4 2 2 0 0 0 0 4zm0 2a4 4 0 1 0 0-8 4 4 0 0 0 0 8z"/></svg>
+                            </span>
+                            Доставка
+                        </a>
+                        <!-- <a href="#" class="dropdown-link logout">
+                            <span class="dropdown-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"><path fill-rule="evenodd" clip-rule="evenodd" d="M8.5 16a2 2 0 0 1 2-2h3a2 2 0 0 1 2 2v5a1 1 0 1 1-2 0v-5h-3v5a1 1 0 1 1-2 0v-5z"/><path fill-rule="evenodd" clip-rule="evenodd" d="M6 11v6c0 .971.002 1.599.064 2.061.059.434.153.57.229.646.076.076.212.17.646.229C7.4 19.998 8.029 20 9 20h6c.971 0 1.599-.002 2.061-.064.434-.059.57-.153.646-.229.076-.076.17-.212.229-.646.062-.462.064-1.09.064-2.061v-6h2v6.066c0 .886 0 1.65-.082 2.262-.088.655-.287 1.284-.797 1.793-.51.51-1.138.709-1.793.797-.612.082-1.376.082-2.262.082H8.934c-.886 0-1.65 0-2.262-.082-.655-.088-1.284-.287-1.793-.797-.51-.51-.709-1.138-.797-1.793C4 18.716 4 17.952 4 17.066V11h2z"/><path fill-rule="evenodd" clip-rule="evenodd" d="M6.516 2h10.967c.336 0 .67 0 .951.034.322.038.683.13 1.016.39.332.26.51.588.624.89.101.265.182.589.263.914l1.22 4.88c.044.175.086.342.114.484.03.15.057.337.043.543a2 2 0 0 1-1.38 1.768 2.083 2.083 0 0 1-.542.09c-.146.007-.321.007-.507.007h-.117c-.437 0-.816 0-1.155-.078a3 3 0 0 1-1.513-.876 2.997 2.997 0 0 1-2.125.953l-.116.001h-.135A2.997 2.997 0 0 1 12 11.045a2.997 2.997 0 0 1-2.125.953L9.759 12h-.135a2.997 2.997 0 0 1-2.124-.954 3 3 0 0 1-1.514.876C5.646 12 5.269 12 4.831 12h-.116c-.187 0-.362 0-.508-.007a2.083 2.083 0 0 1-.542-.09 2 2 0 0 1-1.38-1.768 2.068 2.068 0 0 1 .043-.543c.028-.142.07-.309.114-.485l1.209-4.835.01-.044c.082-.325.163-.649.264-.914.115-.302.292-.63.625-.89.332-.26.694-.352 1.015-.39C5.847 2 6.18 2 6.515 2zm-.72 2.02-.002.006c-.053.14-.106.344-.203.731L4.387 9.572a9.425 9.425 0 0 0-.1.422l.02.001c.09.005.214.005.429.005.588 0 .712-.007.796-.026a1 1 0 0 0 .697-.59c.033-.08.059-.197.153-.764l.002-.012c.01-.06.022-.13.033-.184.006-.03.016-.078.032-.13V8.29c.01-.032.052-.176.157-.323a1.1 1.1 0 0 1 1.787 0c.106.147.148.291.157.323v.003c.016.053.026.102.032.13l.033.185.083.501.014.078A1 1 0 0 0 9.75 10h.078a1 1 0 0 0 .973-.89l.083-.502c.01-.06.022-.13.033-.184a1.57 1.57 0 0 1 .032-.134c.01-.032.052-.176.157-.323a1.1 1.1 0 0 1 1.787 0c.106.147.147.291.157.323v.003c.016.053.026.102.032.13l.033.185.083.501.013.078A1 1 0 0 0 14.25 10h.079a1 1 0 0 0 .972-.89l.083-.502c.01-.06.022-.13.033-.184a1.57 1.57 0 0 1 .032-.134c.01-.032.052-.176.157-.323a1.1 1.1 0 0 1 1.787 0c.106.147.148.291.157.323v.003c.016.053.026.102.032.13l.033.185.002.012c.094.567.12.684.153.764a1 1 0 0 0 .697.59c.084.02.209.026.797.026a9.85 9.85 0 0 0 .448-.006l-.004-.016a9.34 9.34 0 0 0-.096-.406l-1.204-4.815c-.097-.387-.15-.591-.203-.731l-.002-.006h-.006c-.148-.018-.36-.02-.759-.02H6.561c-.4 0-.61.002-.759.02h-.006z"/></svg>
+                            </span>
+                            О нас
+                        </a> -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+   
+    <div class="sidebar_menu">
+               <div>
+                    <a href="#" class="logo">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 58 83" >
+                            <path d="M4 4L4 54C4 67.8071 15.1929 79 29 79V79C42.8071 79 54 67.8071 54 54V4.94936C54 4.42504 53.575 4 53.0506 4H29" stroke-width="7" stroke-linecap="round"/>
+                        </svg>
+                    </a>
+               </div>
+               <div class="sb_bug">
+                    <div class="products" id="cart"></div>
+                    <div class="sb_order_btn" onclick="openOrderModal()">
+                        <img src='https://svgshare.com/i/15PU.svg' title='' />
+                        Заказать
+                    </div>
+               </div>
+    </div>
+            
+    <div class="details_product">
+       
+    </div>
+    
+    <script src="products.js"></script>
+    <script src="theme.js"></script>
+    <script src="drop.js"></script>
+    <script src="feedback.js"></script>
+
+    <script src="https://unpkg.com/@dotlottie/player-component@latest/dist/dotlottie-player.mjs" type="module"></script> 
+
+    
+</body>
+</html>
